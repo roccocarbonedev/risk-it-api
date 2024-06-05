@@ -14,12 +14,13 @@ router.post('/add', async function (req, res) {
         nome: req.body.nome,
         creatorId: req.body.creatorId,
         password: req.body.password,
-        numberOfUsers: req.body.numberOfUsers
+        numberOfUsers: req.body.numberOfUsers,
+        userTurnQuestion: req.body.userTurnQuestion,
     });
     await newRoom.save().then(result => {
         return res.status(201).json({
             message: 'Stanza creata con successo!',
-            data: { email: result.email },
+            data: { nome: result.nome },
         });
     }).catch(err => {
         if (err.name === 'MongoServerError' && err.code === 11000) {
