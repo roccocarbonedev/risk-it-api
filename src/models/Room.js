@@ -20,8 +20,16 @@ const roomSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    usersName:{
+        type: [String],
+        required: true
+    },
     numberOfUsers: {
         type: Number,
+        required: true
+    },
+    userTurnQuestion: {
+        type: String,
         required: true
     }
 })
