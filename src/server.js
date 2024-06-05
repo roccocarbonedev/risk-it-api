@@ -7,7 +7,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-mongoose.connect('mongodb+srv://<username>:<password>@<cluster-url>/<dbname>?retryWrites=true&w=majority', {
+
+mongoose.connect('mongodb+srv://carbonerdeveloper:EEpS0t8hrpU9Y2UQ@cluster0.pfvogjs.mongodb.net/riskitapp', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     ssl: true
@@ -24,8 +25,6 @@ mongoose.connect('mongodb+srv://<username>:<password>@<cluster-url>/<dbname>?ret
 }).catch((err) => {
     console.error('Failed to connect to MongoDB', err);
 });
-
-
 
 const PORT = process.env.PORT || 3000;
 
