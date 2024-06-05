@@ -20,8 +20,8 @@ mongoose.connect('mongodb+srv://carbonerdeveloper:EEpS0t8hrpU9Y2UQ@cluster0.pfvo
 
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log("Serven run on port: " + PORT)
-})
+app.listen(PORT,()=>{
+    console.log("Server running at PORT: " + PORT);
+});
