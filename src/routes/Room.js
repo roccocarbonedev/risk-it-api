@@ -14,6 +14,7 @@ router.post('/add', async function (req, res) {
         nome: req.body.nome,
         creatorId: req.body.creatorId,
         password: req.body.password,
+        usersName: req.body.usersName,
         numberOfUsers: req.body.numberOfUsers,
         userTurnQuestion: req.body.userTurnQuestion,
     });
