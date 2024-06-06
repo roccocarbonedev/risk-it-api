@@ -38,25 +38,23 @@ router.post('/add', async function (req, res) {
 })
 
 
-router.put('/update', async function (req, res) {
+router.put('/rooms/update', async function (req, res) {
     await Room.findOneAndUpdate(
         { id: req.body.id },
-        {
-            nome: req.body.nome
-        },
+        req.body,
         { new: true }
     ).then(result => {
         return res.status(201).json({
             message: 'Stanza modificata con successo!',
-            data: { nome: result.nome }
+            data: result
         });
     }).catch(err => {
         return res.status(400).json({
             message: "You didn't give us what we want!",
             data: { err },
         });
-    })
-})
+    });
+});
 
 
 //VEDERE COME INVIARE l'ERRORE
