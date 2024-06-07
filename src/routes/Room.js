@@ -42,8 +42,9 @@ router.post('/add', async function (req, res) {
 router.put('/rooms/update', async function (req, res) {
     await Room.findOneAndUpdate(
         { id: req.body.id },
-        req.body,
-        { new: true }
+        { $set: req.body },
+        { new: true },
+        console.log(req.body)
     ).then(result => {
         return res.status(201).json({
             message: 'Stanza modificata con successo!',
@@ -51,7 +52,7 @@ router.put('/rooms/update', async function (req, res) {
         });
     }).catch(err => {
         return res.status(400).json({
-            message: "You didn't give us what we want!",
+            message: "Errore durante la modfica della stanza: " + err,
             data: { err },
         });
     });
