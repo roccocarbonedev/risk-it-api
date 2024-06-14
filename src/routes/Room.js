@@ -4,27 +4,38 @@ const Room = require('../models/Room')
 
 router.get('/list', async function (req, res) {
     var rooms = await Room.find();
-    res.json(rooms)
-})
+    rooms = rooms.reverse();
+    res.json(rooms);
+});
+
+
+router.get('/search', async function (req, res) {
+    const search = req.query.name || '';
+    var rooms = await Room.find({ nome: new RegExp(search, 'i') });
+    res.json(rooms);
+});
 
 router.post('/add', async function (req, res) {
+    console.log(req.body);
     const newRoom = new Room({
         id: req.body.id,
         nome: req.body.nome,
-        creatorId: req.body.creatorId,
+        creatorRoomId: req.body.creatorRoomId,
         password: req.body.password,
         usersName: req.body.usersName,
         numberOfUsers: req.body.numberOfUsers,
         userTurnQuestion: req.body.userTurnQuestion,
+        question: req.body.question,
     });
     await newRoom.save().then(result => {
         const io = req.app.get('socketio');
         io.to(result.id).emit('roomAdded', result);
         return res.status(201).json({
-            message: 'Stanza creata con successo!',
-            data: { nome: result.nome },
+            message: 'Stanza aggiunta con successo!',
+            data: result
         });
     }).catch(err => {
+        console.log('errore: ' + err)
         if (err.name === 'MongoServerError' && err.code === 11000) {
             return res.status(400).json({
                 message: 'Esiste già una stanza con questo nome!',
@@ -32,7 +43,7 @@ router.post('/add', async function (req, res) {
             });
         }
         return res.status(400).json({
-            message: "You didn't give us what we want!",
+            message: "Failed to add new room!",
             data: { err },
         });
     });

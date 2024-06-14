@@ -1,13 +1,39 @@
 const express = require('express')
 const app = express()
+const passport = require('passport');
+const session = require('express-session');
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const socketIO = require('socket.io');
 const Room = require('./models/Room');
 const http = require('http');
+require('./config/passport-setup');
+const { OAuth2Client } = require('google-auth-library');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.post('/auth/google', async (req, res) => {
+    const { token } = req.body;
+
+    console.log(process.env.GOOGLE_CLIENT_ID)
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+        });
+
+        const { name, email, picture } = ticket.getPayload();
+
+       
+        res.status(200).json({ success: "success" });
+    } catch (error) {
+        res.status(400).json({ error: 'Invalid token:' + error });
+    }
+});
+
 
 mongoose.connect('mongodb+srv://carbonerdeveloper:EEpS0t8hrpU9Y2UQ@cluster0.pfvogjs.mongodb.net/riskitapp', {
     useNewUrlParser: true,

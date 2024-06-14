@@ -1,5 +1,21 @@
 const mongoose = require('mongoose')
 
+const questionSchema = mongoose.Schema({
+    id: {
+        type: String,
+    },
+    textQuestion: {
+        type: String,
+    },
+    creatorQuestionId: {
+        type: String,
+    },
+    rageOfRisk: {
+        type: [Number],
+
+    }
+})
+
 
 const roomSchema = mongoose.Schema({
     id: {
@@ -12,7 +28,7 @@ const roomSchema = mongoose.Schema({
         unique: true,
         required: true
     },
-    creatorId: {
+    creatorRoomId: {
         type: String,
         required: true
     },
@@ -20,7 +36,7 @@ const roomSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    usersName:{
+    usersName: {
         type: [String],
         required: true
     },
@@ -30,8 +46,12 @@ const roomSchema = mongoose.Schema({
     },
     userTurnQuestion: {
         type: String,
-        required: true
+
+    },
+    question: {
+        type: questionSchema,
     }
+
 })
 
 module.exports = mongoose.model("Room", roomSchema)
