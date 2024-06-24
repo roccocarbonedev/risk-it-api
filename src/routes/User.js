@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const User = require('../models/User');
+const generateJWT = require('../middleware/generateJWT');
+const authenticateJWT = require('../middleware/authenticateJWT')
 
 
 router.post('/verifyAuthToken', async (req, res) => {
@@ -9,6 +11,8 @@ router.post('/verifyAuthToken', async (req, res) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
+    const userRecord = await admin.auth().getUser(decodedToken.uid);
+
     const { uid, email, name, picture, sub } = decodedToken;
 
     let user = await User.findOne({ uid });
@@ -16,16 +20,19 @@ router.post('/verifyAuthToken', async (req, res) => {
     if (!user) {
       user = new User({
         uid,
-        email: decodedToken['firebase']['sign_in_provider'] === "apple.com" ? `${sub}@apple.com` : email,
-        name: decodedToken['firebase']['sign_in_provider'] === "apple.com" ? sub : name,
-        picture: decodedToken['firebase']['sign_in_provider'] === "apple.com" ? null : picture,
+        email,
+        name,
+        picture
       });
       await user.save();
     }
 
-    //TODO: GENERARE TOKEN DI AUTENTICAZZIONE DELLE CHIAMATE
+    const { token: jwtToken, expiry: expiry } = generateJWT(user);
 
-    res.status(200).send({ message: 'Login successful', user });
+    console.log("User" + user)
+    console.log("Token" + token)
+    console.log("Expiry" + expiry)
+    res.status(200).send({ message: 'Login successful', user: user, token: jwtToken, expiry: expiry });
 
   } catch (error) {
     console.error(error.message);
@@ -35,14 +42,17 @@ router.post('/verifyAuthToken', async (req, res) => {
 
 
 router.delete('/deleteAccount', async (req, res) => {
-  const token = req.headers.authorization.split('Bearer ')[1];
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.status(401).send({ message: 'No token provided' });
+  }
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const { uid } = decodedToken;
 
     await admin.auth().deleteUser(uid);
-
     await User.findOneAndDelete({ uid });
 
     res.status(200).send({ message: 'Account deleted successfully' });

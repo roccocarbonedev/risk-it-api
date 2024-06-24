@@ -7,6 +7,7 @@ const Room = require('./models/Room');
 const http = require('http');
 const { initializeApp } = require('firebase-admin/app');
 const User = require('./models/User')
+const authenticateJWT = require('./middleware/authenticateJWT')
 
 
 app.use(bodyParser.urlencoded({ extended: false }));

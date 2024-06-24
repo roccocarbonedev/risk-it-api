@@ -1,21 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const Room = require('../models/Room')
+const authenticateJWT = require('../middleware/authenticateJWT')
 
-router.get('/list', async function (req, res) {
+router.get('/list', authenticateJWT, async function (req, res) {
     var rooms = await Room.find();
     rooms = rooms.reverse();
     res.json(rooms);
 });
 
 
-router.get('/search', async function (req, res) {
+router.get('/search', authenticateJWT, async function (req, res) {
     const search = req.query.name || '';
     var rooms = await Room.find({ nome: new RegExp(search, 'i') });
     res.json(rooms);
 });
 
-router.post('/add', async function (req, res) {
+router.post('/add', authenticateJWT, async function (req, res) {
     console.log(req.body);
     const newRoom = new Room({
         id: req.body.id,
@@ -49,7 +50,7 @@ router.post('/add', async function (req, res) {
     });
 })
 
-router.put('/update', async function (req, res) {
+router.put('/update', authenticateJWT, async function (req, res) {
     await Room.findOneAndUpdate(
         { id: req.body.id },
         { $set: req.body },
@@ -69,7 +70,7 @@ router.put('/update', async function (req, res) {
     });
 })
 
-router.delete('/delete', async function (req, res) {
+router.delete('/delete', authenticateJWT, async function (req, res) {
     const deleteRoom = await Room.deleteOne({ id: req.body.id })
     var response;
     try {
