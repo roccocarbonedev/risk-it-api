@@ -8,6 +8,7 @@ const http = require('http');
 const { initializeApp } = require('firebase-admin/app');
 const User = require('./models/User')
 const authenticateJWT = require('./middleware/authenticateJWT')
+require('dotenv').config();
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 var admin = require("firebase-admin");
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+//var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
