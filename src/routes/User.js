@@ -29,9 +29,6 @@ router.post('/verifyAuthToken', async (req, res) => {
 
     const { token: jwtToken, expiry: expiry } = generateJWT(user);
 
-    console.log("User" + user)
-    console.log("Token" + token)
-    console.log("Expiry" + expiry)
     res.status(200).send({ message: 'Login successful', user: user, token: jwtToken, expiry: expiry });
 
   } catch (error) {
