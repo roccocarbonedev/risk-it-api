@@ -26,6 +26,7 @@ const questionSchema = mongoose.Schema({
     },
     votesList: {
         type: [voteSchema],
+        default: null,
     }
 })
 
