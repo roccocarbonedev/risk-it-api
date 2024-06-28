@@ -1,5 +1,15 @@
 const mongoose = require('mongoose')
 
+
+const voteSchema = mongoose.Schema({
+    userId: {
+        type: String,
+    },
+    vote: {
+        type: Number
+    }
+})
+
 const questionSchema = mongoose.Schema({
     id: {
         type: String,
@@ -13,6 +23,9 @@ const questionSchema = mongoose.Schema({
     rageOfRisk: {
         type: [Number],
 
+    },
+    votesList: {
+        type: [voteSchema],
     }
 })
 
