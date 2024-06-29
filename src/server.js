@@ -53,9 +53,20 @@ app.set('socketio', io);
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
-    socket.on('joinRoom', (roomId) => {
+    socket.on('joinRoom', async (roomId) => {
         socket.join(roomId);
         console.log(`User ${socket.id} joined room ${roomId}`);
+        try {
+            const room = await Room.findOne({ id: roomId });
+            if (room) {
+                // Invia le informazioni della stanza al client che si è unito
+                socket.emit('joinedRoom', room);
+            } else {
+                socket.emit('error', 'Stanza non trovata');
+            }
+        } catch (error) {
+            socket.emit('error', 'Errore nel recupero delle informazioni della stanza');
+        }
     });
 
     socket.on('leaveRoom', (roomId) => {
